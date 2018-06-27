@@ -1,213 +1,135 @@
-picotags
+PicoTags
 ========
 
-Adds page tagging functionality to [Pico](http://pico.dev7studios.com/).
-Based on [Pico Tags by Szymon Kaliski](https://github.com/szymonkaliski/Pico-Tags-Plugin), but only uses the provided hooks
-and leaves the Pico core alone.
+<!--
+@author Brice Boucard
+@link https://github.com/bricebou/PicoTags/
+@license http://bricebou.mit-license.org/
+-->
 
-It gives you access to:
-* The current page `meta.tags` array
-* Each `page.tags` in the `pages` array
+Adds page tagging functionality to [Pico CMS](http://picocms.org/).
+
+_Originally made by [Dan Reeves](https://github.com/danreeves/picotags), based on [Pico Tags by Szymon Kaliski](https://github.com/szymonkaliski/Pico-Tags-Plugin), but only uses the provided hooks and leaves the Pico core alone._
+
+**/!\ This plugin is for the version 2 of [Pico CMS](http://picocms.org/). For previous versions, you have to use [this release](https://github.com/bricebou/PicoTags/releases/tag/v1.0).**
+
+
+PicoTags plugin gives access to:
+* The current page `meta["Tags"]` array
 * The `tag_list` array of all used tags
 * If on a `/tag/` URL, the `current_tag` variable
 
-##Installation
+## Installation
 
-Place `picotags.php` file into the `plugins` directory.
+__/!\ No matter the way you install the plugin, it's mandatory you name the plugin folder `PicoTags`.__ 
 
-##Usage
+### Using Git
 
-Add a 'Tags' attribute into the page meta:
+Just move to your Pico CMS `plugins` directory and run:
+
+```
+git clone https://github.com/bricebou/PicoTags
+```
+
+### Otherwise
+
+Download the [latest zip archive from Github](https://github.com/bricebou/PicoTags/archive/master.zip) and unzip it inside a `plugins/PicoTags/` folder.
+
+## Configuration
+
+The configuration of the PicoTags plugin can be put inside the `config/config.yml` file of your Pico installation or inside a file named as you want inside the `config/` folder (for instance `config_plugin_tags.yml`).
+
+Here is the conf with some explanations:
+```
+PicoTags.enabled: true
+ptags:
+  # Do you want to sort tags (case unsensitive) ?
+  # true or false
+  asort: true
+  # Do you want to remove from the tags list
+  # the ones that are used in only one page ?
+  # true or false
+  delunique: true
+  # Specify the Twig template to use for the tag pages
+  # The file has to be inside the theme in use folder
+  # You have to indicate the `.twig` extension
+  # See the template section into the README.md. 
+  template: tags.twig
+  # This is a way to split the tag_list array in multiple arrays.
+  # See the template section into the README.md for more info 
+  # on how to access them.
+  nbcol: 2
+  # Excluding pages from the tags list based on their template.
+  # It has to be a string, with the `pipe (|)` as separator.
+  # You have to escape single quotes with a backslash.
+  # /!\ Be careful :
+  # in some cases you can obtain 404 error
+  # when there is no articles to display in a tag page.
+  excluded_templates: "category|supcategory"
+```
+
+
+## Usage
+
+### Describing your content
+
+You simply have to add a 'Tags' attribute into the _meta_ of the pages you want.
+
+__/!\ Make sure the _meta_ is capitalized: `Tags`: `tags` or `TAGS` won't work.__
 
 ```
 /*
-Title: My First Blog Post
-Description: It's a blog post about javascript and php
-Author: Dan Reeves
+Title: LaTex and Phonetics
+Description: LaTeX packages for students in linguistics
+Author: Brice Boucard
 Robots: index,follow
-
-Date: 2013/10/02
-Tags: js,javascript,php
+Date: 2017/10/02
+Tags: LaTeX,Linguistics,package
 */
 ```
 
-You can now access both the current page `meta.tags` and each `page.tags` in the `pages` array:
-```html
-{% if is_front_page %}
-<!-- front page -->
-    {% for page in pages %}
-        {% if page.date %}
-            <article>
-                <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
-                <p class="meta">Tags:
-                    {% for tag in page.tags %}
-                        <a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a>
-                    {% endfor %}
-                </p>
-                {{ page.excerpt }}
-            </article>
-        {% endif %}
-    {% endfor %}
-<!-- front page -->
-{% elseif meta.tags %}
-<!-- blog post -->
+### In your templates
+
+- To display the tags of an article, of a page, you simply have to call the `meta["Tags"]` array and let Twig do the job:
+
+```
+<article>
+    <h2>{{ meta.title }}</h2>
+    <p class="meta">Tags:
+        {% for tag in meta["Tags"] %}
+            <a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a>
+        {% endfor %}
+    </p>
+</article>
+```
+
+- When you want to display all the pages of your site and the associated tags, here is the code you can use:
+
+```
+{% for page in pages %}
     <article>
-        <h2>{{ meta.title }}</h2>
+        <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
         <p class="meta">Tags:
-            {% for tag in meta.tags %}
+            {% for tag in page.meta["Tags"] %}
                 <a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a>
             {% endfor %}
         </p>
-        {{ content }}
-    </article>
-<!-- blog post -->
-
-{% elseif pages and meta.title != 'Error 404' %}
-<!-- tags page -->
-    All tags:
-    <ul class="tags">
-        {% for tag in tag_list %}
-        <li><a href="/tag/{{ tag }}">#{{ tag }}</a></li>
-        {% endfor %}
-    </ul>
-    <p>Posts tagged <a href="{{ page.url }}">#{{ current_tag }}</a>:</p>
-    {% for page in pages %}
-        {% if page.date %}
-            <article>
-                <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
-                <p class="meta">Posted on {{ page.date_formatted }} by {{ page.author }}
-                    <span class="tags"><br />Tags:
-                        {% for tag in page.tags %}
-                                <a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a>
-                        {% endfor %}
-                    </span>
-                </p>
-                {{ page.content }}
-            </article>
-        {% endif %}
-    {% endfor %}
-<!-- tags page -->
-{% else %}
-<!-- single page -->
-<article>
-    <h2>{{ meta.title }}</h2>
-    {{ content }}
-</article>
-<!-- single page -->
-{% endif %}
-```
-
-If you encounter any trouble with this template structure, you might want to try this one:
-```
-{% if is_front_page %}
-
-    FRONT PAGE
-
-{% elseif current_page is not empty %}
-
-    {% if meta.tags is not empty %}
-
-        <!-- BLOG POSTS WITH TAGS -->
-        <article>
-            <h2>{{ meta.title }}</h2>
-            <p class="meta">Tags:
-                {% for tag in meta.tags %}
-                    <a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a>
-                {% endfor %}
-            </p>
-            {{ content }}
-        </article>
-
-    {% else %}
-
-        <!-- BLOG POSTS WITHOUT TAGS -->
-        <article>
-            <h2>{{ meta.title }}</h2>
-            {{ content }}
-        </article>
-
-    {% endif %}
-
-{% elseif current_page is empty %}
-
-    {% if meta.title != 'Error 404' %}
-
-        <!-- TAG PAGES : list of blog posts tagged with #... -->
-
-        All tags:
-        <ul class="tags">
-            {% for tag in tag_list %}
-            <li><a href="/tag/{{ tag }}">#{{ tag }}</a></li>
-            {% endfor %}
-        </ul>
-        <p>Posts tagged <a href="{{ page.url }}">#{{ current_tag }}</a>:</p>
-        {% for page in pages %}
-            {% if page.date %}
-                <article>
-                    <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
-                    <p class="meta">Posted on {{ page.date_formatted }} by {{ page.author }}
-                        <span class="tags"><br />Tags:
-                            {% for tag in page.tags %}
-                                    <a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a>
-                            {% endfor %}
-                        </span>
-                    </p>
-                    {{ page.content }}
-                </article>
-            {% endif %}
-        {% endfor %}
-
-    {% endif %}
-{% endif %}
-```
-
-### Personal template for tag pages
-
-You can choose to use a personal template for tag pages instead of using conditions in your theme `index.html`.
-
-First, you have to add a setting to your `config.php`:
-```
-$config['ptags_template'] = 'YOUR_TAG_TEMPLATE';
-```
-Then, you have to create a "YOUR_TAG_TEMPLATE.html" file inside your theme folder ; in this template page, you can simply add in the \<body\> section something like that:
-```
-<h1>Posts tagged <a href="{{ page.url }}">#{{ current_tag }}</a></h1>
-{% for page in pages %}          
-    <article>
-        <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
-        <p class="meta">
-            <span class="tags"><br />Tags :
-                {% for tag in page.tags %}
-                    <a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a>
-                {% endfor %}
-            </span>
-        </p>
-        {{ page.excerpt }}
     </article>
 {% endfor %}
-<h1>All tags :</h1>
-    <ul>
-        {% for tag in tag_list %}
-            <li><a href="/tag/{{ tag }}">#{{ tag }}</a></li>
-        {% endfor %}
-    </ul>
 ```
 
-## Alphabetically sorted list
+- Listing all the tags used in your site:
 
-In your config.php :
 ```
-$config['ptags_sort'] = true;
+<ul>
+    {% for tag in tag_list %}
+        <li><a href="/tag/{{ tag }}">#{{ tag }}</a></li>
+    {% endfor %}
+</ul>
 ```
 
-## Multicolumn output
+If you have used the `nbcol` option (let's say, with the value `2`), you can still access the `tag_list` array (all the tags) but also two new arrays:
 
-For a two columns output :
-- in your config.php :
-```
-$config['ptags_nbcol'] = 2;
-```
-- in your template output : 
 ```
 <ul>
     {% for tag in tag_list_0 %}
@@ -220,31 +142,25 @@ $config['ptags_nbcol'] = 2;
     {% endfor %}
 </ul>
 ```
-## Adding meta keywords to \<head\>
+
+- Adding meta keywords to \<head\>:
 ```
-{% if meta.tags %}
-    <meta name="keywords" content="{{ meta.tags | join(',') }}">
-{% endif %}
+{% if meta["Tags"] %}<meta name="keywords" content="{{ meta["Tags"] | join(',') }}">{% endif %}
 ```
 
-## Removing from the tags list the ones that are used in only one page
-In your config.php :
+- Tag pages: each tag has its own page, which URL looks like `example.com/tag/current_tag`. You have to create a specific template (see [Configuration section above](#configuration) in which you can simply paste this snippet in its `<body>`:
 ```
-$config['ptags_delunique'] = true;
+<h2>Posts tagged <a href="{{ page.url }}">#{{ current_tag }}</a></h2>
+{% for page in pages %}          
+    <article>
+        <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
+        <p class="meta">
+            <span class="tags"><br />Tags :
+                {% for tag in page.meta["Tags"] %}
+                    <span><a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a></span>
+                {% endfor %}
+            </span>
+        </p>
+    </article>
+{% endfor %}
 ```
-
-## Excluding pages from the tags list
-
-In your config.php, you can use the setting `ptags_exclude` and specify the pages you want to exclude from the tag_list through an array in which you can associate multiple values for a meta type :
-```
-$config['ptags_exclude'] = array(
-    'template' => 'category',
-    'title' => 'GCweb, qu\'est-ce que c\'est ?|CV',
-    'category' => 'Maîtrise Sciences du langage|Master recherche Sciences du langage|Master professionnel Édition'
-);
-```
-
-__WARNING__
-- you have to use the `pipe (|)` as a separator;
-- you have to escape single quotes with a backslash;
-- be careful, in some case you can obtain 404 error when there is no articles to display in a tag page.
