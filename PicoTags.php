@@ -202,7 +202,22 @@ class PicoTags extends AbstractPicoPlugin {
                     // And add them to the tag_list array
                     $tag_list[] = $tag;
                 }
+
                 $new_pages[] = $page;
+            }
+            // Removing from the tags list the tags with only one reference
+            // Change the value to $config['ptags_delunique'] = true; in the config.php
+
+            if (isset($this->ptags_delunique) and $this->ptags_delunique === true)
+            {
+                foreach(array_count_values($tag_list) as $val => $occ)
+                {
+                    if($occ == 1)
+                    {
+                        $key = array_search($val, $tag_list);
+                        unset($tag_list[$key]);
+                    }
+                }
             }
             $pages = $new_pages;
             $this->tag_list = array_unique(array_filter($tag_list));
