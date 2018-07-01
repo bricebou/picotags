@@ -82,7 +82,8 @@ class PicoTags extends AbstractPicoPlugin {
 
     public function onMetaHeaders(array &$headers)
     {
-        // Define tags variable
+        // Define tags variable to avoid
+        // PHP Notice:  Undefined index: Tags
         $headers['tags'] = 'Tags';
     }
 
@@ -146,8 +147,6 @@ class PicoTags extends AbstractPicoPlugin {
                                 // Add that page to the new_pages
                                 $new_pages[] = $page;
                             }
-
-
                         }
                     }
                 }
@@ -165,7 +164,7 @@ class PicoTags extends AbstractPicoPlugin {
                         unset($tag_list[$key]);
                     }
                 }
-            }
+            }   
 
             // Sort alphabetically, case insensitive
             // Change the value to $config['ptags_sort'] = true; in the config.php
@@ -187,8 +186,7 @@ class PicoTags extends AbstractPicoPlugin {
                 // Add the tag list to the class scope, taking out duplicate or empty values
                 $this->tag_list = array_unique(array_filter($tag_list));
             }
-            // Overwrite $pages with $new_pages
-            $pages = $new_pages;
+            $this->tag_pages = $new_pages;
         }
         else
         { // Workaround
@@ -219,7 +217,7 @@ class PicoTags extends AbstractPicoPlugin {
                     }
                 }
             }
-            $pages = $new_pages;
+            $this->tag_pages = $new_pages;
             $this->tag_list = array_unique(array_filter($tag_list));
         }
     }
@@ -234,6 +232,7 @@ class PicoTags extends AbstractPicoPlugin {
             }
             // Set page title to #TAG
             $twigVariables['meta']['title'] = "#" . $this->current_tag;
+            $twigVariables['tag_pages']= $this->tag_pages;
         }
         $twigVariables['current_tag'] = $this->current_tag;
         $twigVariables['tag_list'] = $this->tag_list; // {{ tag_list }} in an array
