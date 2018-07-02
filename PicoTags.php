@@ -50,7 +50,7 @@ class PicoTags extends AbstractPicoPlugin {
 
     public function onConfigLoaded(array &$config)
     {
-        if (isset($config['ptags_nbcol']))
+        if (isset($config['ptags']['nbcol']))
         {
             $this->ptags_nbcol = $config['ptags']['nbcol'];
         }
