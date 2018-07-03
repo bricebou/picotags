@@ -151,7 +151,7 @@ If you have used the `nbcol` option (let's say, with the value `2`), you can sti
 - Tag pages: each tag has its own page, which URL looks like `example.com/tag/current_tag`. You have to create a specific template (see [Configuration section above](#configuration) in which you can simply paste this snippet in its `<body>`:
 ```
 <h2>Posts tagged <a href="{{ page.url }}">#{{ current_tag }}</a></h2>
-{% for page in pages %}          
+{% for page in tag_pages %}          
     <article>
         <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
         <p class="meta">
@@ -164,3 +164,5 @@ If you have used the `nbcol` option (let's say, with the value `2`), you can sti
     </article>
 {% endfor %}
 ```
+
+Note that you can paginate the results, following this blog post I made on [_My Own Memory Hole_](http://momh.fr/tutos/Pico/pico_twig_pagination).
