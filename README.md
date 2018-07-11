@@ -40,7 +40,7 @@ Download the [latest zip archive from Github](https://github.com/bricebou/PicoTa
 The configuration of the PicoTags plugin can be put inside the `config/config.yml` file of your Pico installation or inside a file named as you want inside the `config/` folder (for instance `config_plugin_tags.yml`).
 
 Here is the conf with some explanations:
-```
+```yaml
 PicoTags.enabled: true
 ptags:
   # Do you want to sort tags (case unsensitive) ?
@@ -78,14 +78,14 @@ You simply have to add a 'Tags' attribute into the _meta_ of the pages you want.
 __/!\ Make sure the _meta_ is capitalized: `Tags`: `tags` or `TAGS` won't work.__
 
 ```
-/*
+---
 Title: LaTex and Phonetics
 Description: LaTeX packages for students in linguistics
 Author: Brice Boucard
 Robots: index,follow
 Date: 2017/10/02
 Tags: LaTeX,Linguistics,package
-*/
+---
 ```
 
 ### In your templates
@@ -123,7 +123,7 @@ Tags: LaTeX,Linguistics,package
 ```
 <ul>
     {% for tag in tag_list %}
-        <li><a href="/tag/{{ tag }}">#{{ tag }}</a></li>
+        <li><a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a></li>
     {% endfor %}
 </ul>
 ```
@@ -133,12 +133,12 @@ If you have used the `nbcol` option (let's say, with the value `2`), you can sti
 ```
 <ul>
     {% for tag in tag_list_0 %}
-        <li><a href="/tag/{{ tag }}">#{{ tag }}</a></li>
+        <li><a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a></li>
     {% endfor %}
 </ul>
 <ul>
     {% for tag in tag_list_1 %}
-        <li><a href="/tag/{{ tag }}">#{{ tag }}</a></li>
+        <li><a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a></li>
     {% endfor %}
 </ul>
 ```
