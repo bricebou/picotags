@@ -150,7 +150,7 @@ If you have used the `nbcol` option (let's say, with the value `2`), you can sti
 
 - Tag pages: each tag has its own page, which URL looks like `example.com/tag/current_tag`. You have to create a specific template (see [Configuration section above](#configuration) in which you can simply paste this snippet in its `<body>`:
 ```
-<h2>Posts tagged <a href="{{ page.url }}">#{{ current_tag }}</a></h2>
+<h2>Posts tagged #{{ current_tag|e }}</h2>
 {% for page in tag_pages %}          
     <article>
         <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
