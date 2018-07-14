@@ -97,7 +97,7 @@ Tags: LaTeX,Linguistics,package
     <h2>{{ meta.title }}</h2>
     <p class="meta">Tags:
         {% for tag in meta["Tags"] %}
-            <a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a>
+            <a href="{{ base_url }}/tag/{{ tag|e('url') }}">#{{ tag|e }}</a>
         {% endfor %}
     </p>
 </article>
@@ -111,7 +111,7 @@ Tags: LaTeX,Linguistics,package
         <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
         <p class="meta">Tags:
             {% for tag in page.meta["Tags"] %}
-                <a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a>
+                <a href="{{ base_url }}/tag/{{ tag|e('url') }}">#{{ tag|e }}</a>
             {% endfor %}
         </p>
     </article>
@@ -123,7 +123,7 @@ Tags: LaTeX,Linguistics,package
 ```
 <ul>
     {% for tag in tag_list %}
-        <li><a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a></li>
+        <li><a href="{{ base_url }}/tag/{{ tag|e('url') }}">#{{ tag|e }}</a></li>
     {% endfor %}
 </ul>
 ```
@@ -133,12 +133,12 @@ If you have used the `nbcol` option (let's say, with the value `2`), you can sti
 ```
 <ul>
     {% for tag in tag_list_0 %}
-        <li><a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a></li>
+        <li><a href="{{ base_url }}/tag/{{ tag|e('url') }}">#{{ tag|e }}</a></li>
     {% endfor %}
 </ul>
 <ul>
     {% for tag in tag_list_1 %}
-        <li><a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a></li>
+        <li><a href="{{ base_url }}/tag/{{ tag|e('url') }}">#{{ tag|e }}</a></li>
     {% endfor %}
 </ul>
 ```
@@ -157,7 +157,7 @@ If you have used the `nbcol` option (let's say, with the value `2`), you can sti
         <p class="meta">
             <span class="tags"><br />Tags :
                 {% for tag in page.meta["Tags"] %}
-                    <span><a href="{{ base_url }}/tag/{{ tag }}">#{{ tag }}</a></span>
+                    <span><a href="{{ base_url }}/tag/{{ tag|e('url') }}">#{{ tag|e }}</a></span>
                 {% endfor %}
             </span>
         </p>
