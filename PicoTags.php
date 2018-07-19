@@ -20,6 +20,7 @@ class PicoTags extends AbstractPicoPlugin {
 
     public $is_tag;
     public $current_tag;
+    public $tag_list = array();
 
     /*
         Declaring two functions for sorting tags with special chars
@@ -118,9 +119,8 @@ class PicoTags extends AbstractPicoPlugin {
         // If the URL starts with 'tag/' do this different logic
         if ($this->is_tag === true) 
         {
-            // Init $new_pages and $tag_list arrays
+            // Init $new_pages array
             $new_pages = array();
-            $tag_list = array();
 
             foreach ($pages as $page)
             {
@@ -224,7 +224,7 @@ class PicoTags extends AbstractPicoPlugin {
 
     public function onPageRendering(&$templateName, array &$twigVariables)
     {
-        if ($this->is_tag)
+        if ($this->is_tag && in_array($this->current_tag, $this->tag_list))
         {
         	/* Avoiding / Overriding 404 errors on tag pages
         		Thanks to Dan Reeves first version of PicoTags
