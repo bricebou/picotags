@@ -226,6 +226,11 @@ class PicoTags extends AbstractPicoPlugin {
     {
         if ($this->is_tag)
         {
+        	/* Avoiding / Overriding 404 errors on tag pages
+        		Thanks to Dan Reeves first version of PicoTags
+        		https://github.com/danreeves/picotags
+        	*/
+        	header($_SERVER['SERVER_PROTOCOL'].' 200 OK');
             if (isset($this->ptags_template) && $this->ptags_template != '')
             {
                 $templateName = $this->ptags_template;
