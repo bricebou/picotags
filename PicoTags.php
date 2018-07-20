@@ -218,7 +218,9 @@ class PicoTags extends AbstractPicoPlugin {
                 }
             }
             $this->tag_pages = $new_pages;
-            $this->tag_list = array_unique(array_filter($tag_list));
+            if (!empty($tag_list)) {
+            	$this->tag_list = array_unique(array_filter($tag_list));
+            }
         }
     }
 
