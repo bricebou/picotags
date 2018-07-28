@@ -15,9 +15,10 @@ _Originally made by [Dan Reeves](https://github.com/danreeves/picotags), based o
 
 
 PicoTags plugin gives access to:
-* The current page `meta["Tags"]` array
-* The `tag_list` array of all used tags
-* If on a `/tag/` URL, the `current_tag` variable
+
+- the `tag_list` array of all used tags;
+- the `tag_pages` array of all pages with a given tag;
+- if on a `/tag/` URL, the `current_tag` variable.
 
 ## Installation
 
